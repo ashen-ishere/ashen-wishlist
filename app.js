@@ -235,12 +235,25 @@
               ? `<a href="${escapeHtml(artistUrl)}" target="_blank" rel="noopener noreferrer">${safeArtist}</a>`
               : safeArtist;
 
-            let lineHtml = `${safePlatform}`;
-            if (platform.toLowerCase() === "youtube" && artist){
-              lineHtml = `YouTube — ${artistHtml}${details ? ` — ${safeTitle}` : ""}`;
-            } else if (details){
-              lineHtml = `${safePlatform} — ${safeTitle}`;
-            }
+                let lineHtml = "";
+
+                if (platform.toLowerCase() === "youtube"){
+                  lineHtml = artist
+                    ? `${artist} - ${details || ""}`
+                    : (details || "");
+                }
+                else if (platform.toLowerCase() === "musicbee"){
+                  // MusicBee already gives artist - album in details
+                  const parts = (details || "").split(" - ");
+                  const artistName = parts[0] || "";
+                  const albumName = parts.slice(1).join(" - ");
+                  const trackName = artist || "";
+
+                  lineHtml = `${artistName} - ${trackName}`;
+                }
+                else if (details){
+                  lineHtml = details;
+                }
 
             if (thumbUrl){
               const imgHtml = mediaUrl
