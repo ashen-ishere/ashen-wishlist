@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ashen's Wishlists</title>
-  <meta name="description" content="Ashen's hub." />
+  <title>Ashen — Hub</title>
+  <meta name="description" content="Ashen’s hub." />
   <meta name="theme-color" content="#120a1c" />
 
   <style>
@@ -61,7 +61,6 @@
       animation: drift 14s ease-in-out infinite alternate;
       mix-blend-mode: screen;
     }
-
     @keyframes drift{
       0%{ transform: translate(-2%, -1%) rotate(-6deg) scale(1.04); }
       100%{ transform: translate(2%, 1%) rotate(6deg) scale(1.08); }
@@ -75,8 +74,9 @@
       padding: 28px 16px;
     }
 
+    /* Wider on desktop so 2 + 3 feels premium, not cramped */
     .card{
-      width: min(860px, 100%);
+      width: min(1040px, 100%);
       border-radius: calc(var(--radius) + 10px);
       background: linear-gradient(180deg, var(--glass1), var(--glass2));
       border: 1px solid var(--stroke);
@@ -116,7 +116,7 @@
       align-items:flex-start;
       justify-content:space-between;
       gap: 16px;
-      margin-bottom: 18px;
+      margin-bottom: 10px;
     }
 
     .title{
@@ -131,41 +131,38 @@
       color: var(--textDim);
       line-height: 1.35;
       font-size: 14px;
-      max-width: 60ch;
+      max-width: 68ch;
+    }
+
+    /* IMPORTANT: outer container is a vertical stack (prevents side-by-side section squish) */
+    .sections{
+      display:flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .sectionTitle{
+      margin: 8px 0 10px 2px;
+      font-size: 13px;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--textDim);
+      opacity: 0.9;
     }
 
     .grid{
       display:grid;
-      grid-template-columns: 1fr 1fr;
       gap: 14px;
-      margin-top: 18px;
     }
 
-    /* Social row: elegant horizontal strip on desktop */
+    /* Section-specific grids */
+    .grid--wishlists{
+      grid-template-columns: 1fr 1fr;
+    }
+
     .grid--socials{
-      display: flex;
-      gap: 12px;
-    }
-
-    /* Make social cards smaller & cleaner than wishlist cards */
-    .grid--socials .linkCard{
-      flex: 1;
-      min-width: 0;
-    }
-
-    /* Mobile: stack (your current mobile is already perfect) */
-    @media (max-width: 700px){
-      .grid--socials{
-        display: grid;
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* Mobile still stacks nicely */
-    @media (max-width: 700px){
-      .grid--socials{
-        grid-template-columns: 1fr;
-      }
+      grid-template-columns: repeat(3, 1fr);
     }
 
     .linkCard{
@@ -179,6 +176,7 @@
       position:relative;
       transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
       outline: none;
+      min-width: 0;
     }
 
     .linkCard::after{
@@ -208,6 +206,11 @@
       z-index:1;
     }
 
+    /* socials slightly tighter = looks intentional + premium */
+    .grid--socials .lcInner{
+      padding: 16px 16px 14px;
+    }
+
     .lcTop{
       display:flex;
       align-items:flex-start;
@@ -216,18 +219,20 @@
       min-width: 0;
     }
 
-    /* 2-line wrapping titles (no overlap) */
     .lcName{
       margin:0;
       font-weight: 700;
       font-size: 16px;
       letter-spacing: 0.2px;
+
+      /* 2-line clamp */
       white-space: normal;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
       line-height: 1.2;
+      min-width: 0;
     }
 
     .lcHint{
@@ -235,6 +240,12 @@
       color: var(--textDim);
       font-size: 13px;
       line-height: 1.35;
+    }
+
+    /* socials: keep the handle visible, but not too tall */
+    .grid--socials .lcHint{
+      margin-top: 8px;
+      font-size: 12.5px;
     }
 
     .pill{
@@ -258,9 +269,15 @@
       opacity: 0.95;
     }
 
+    /* Responsive */
+    @media (max-width: 900px){
+      .grid--socials{ grid-template-columns: 1fr; }
+    }
+
     @media (max-width: 700px){
       .cardInner{ padding: 20px; }
-      .grid{ grid-template-columns: 1fr; }
+      .grid--wishlists{ grid-template-columns: 1fr; }
+      .grid--socials{ grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -275,12 +292,12 @@
         <div class="top">
           <div>
             <h1 class="title">Wishlists</h1>
-            <p class="subtitle">One link for everything I'm currently eyeing. Pick your platform below.</p>
+            <p class="subtitle">One link for everything I’m currently eyeing. Pick your platform below.</p>
           </div>
         </div>
 
-        <!-- JSON-driven cards -->
-        <div class="grid" id="linksGrid" aria-live="polite"></div>
+        <!-- Sections render here -->
+        <div class="sections" id="linksRoot" aria-live="polite"></div>
 
       </div>
     </section>
@@ -288,7 +305,7 @@
 
   <script>
     (async function init(){
-      const grid = document.getElementById("linksGrid");
+      const rootEl = document.getElementById("linksRoot");
 
       const escapeHtml = (str) => String(str ?? "")
         .replaceAll("&","&amp;")
@@ -298,7 +315,7 @@
         .replaceAll("'","&#039;");
 
       // Loading state
-      grid.innerHTML = `
+      rootEl.innerHTML = `
         <div class="linkCard" style="pointer-events:none; opacity:0.85;">
           <div class="lcInner">
             <div class="lcTop">
@@ -330,17 +347,19 @@
 
         // Page copy
         const page = data.page || {};
+        if (page.title){
+          document.querySelector(".title").textContent = page.title;
+          document.title = `Ashen — ${page.title}`;
+        }
         if (page.subtitle){
           document.querySelector(".subtitle").textContent = page.subtitle;
         }
 
         const sections = Array.isArray(data.sections) ? data.sections : [];
-
-        // Count total items across all sections
         const totalItems = sections.reduce((sum, s) => sum + (Array.isArray(s.items) ? s.items.length : 0), 0);
 
         if (totalItems === 0){
-          grid.innerHTML = `
+          rootEl.innerHTML = `
             <div class="linkCard" style="pointer-events:none; opacity:0.9;">
               <div class="lcInner">
                 <div class="lcTop">
@@ -354,9 +373,16 @@
           return;
         }
 
-        grid.innerHTML = sections.map(section => {
-          const name = escapeHtml(section.name || "");
+        const sectionHtml = sections.map(section => {
+          const sectionName = String(section.name || "");
           const items = Array.isArray(section.items) ? section.items : [];
+          if (items.length === 0) return "";
+
+          const key = sectionName.trim().toLowerCase();
+          const gridClass =
+            key === "socials" ? "grid grid--socials" :
+            key === "wishlists" ? "grid grid--wishlists" :
+            "grid grid--wishlists";
 
           const cards = items.map(item => {
             const url = String(item.url || "#");
@@ -379,7 +405,7 @@
                 <span class="rail" aria-hidden="true" style="${railStyle}"></span>
                 <div class="lcInner">
                   <div class="lcTop">
-                    <h2 class="lcName" title="${label}">${label}</h2>
+                    <h3 class="lcName" title="${label}">${label}</h3>
                     <span class="pill">${pill}</span>
                   </div>
                   ${hint ? `<p class="lcHint">${hint}</p>` : ``}
@@ -388,33 +414,21 @@
             `;
           }).join("");
 
-          // Socials must be a single row of 3
-          const gridClass = (String(section.name || "").toLowerCase() === "socials")
-            ? "grid grid--socials"
-            : "grid";
-
           return `
-            <div style="width:100%;">
-              <h2 style="
-                margin: 22px 0 8px 2px;
-                font-size: 14px;
-                letter-spacing: 0.08em;
-                text-transform: uppercase;
-                color: var(--textDim);
-                opacity: 0.9;
-              ">
-                ${name}
-              </h2>
+            <section>
+              <div class="sectionTitle">${escapeHtml(sectionName)}</div>
               <div class="${gridClass}">
                 ${cards}
               </div>
-            </div>
+            </section>
           `;
         }).join("");
 
+        rootEl.innerHTML = sectionHtml || "";
+
       } catch (err) {
         const attempted = new URL("links.json", window.location.href).toString();
-        grid.innerHTML = `
+        rootEl.innerHTML = `
           <div class="linkCard" style="pointer-events:none; opacity:0.9;">
             <div class="lcInner">
               <div class="lcTop">
@@ -422,7 +436,7 @@
                 <span class="pill">Debug</span>
               </div>
               <p class="lcHint">
-                Tried: ${attempted}<br/>
+                Tried: ${escapeHtml(attempted)}<br/>
                 Error: ${escapeHtml(String(err.message || err))}
               </p>
             </div>
