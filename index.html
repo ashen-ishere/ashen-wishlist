@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ashen — Wishlists</title>
+  <title>Ashen's 'Wishlists</title>
   <meta name="description" content="Ashen’s hub." />
   <meta name="theme-color" content="#120a1c" />
 
@@ -61,6 +61,7 @@
       animation: drift 14s ease-in-out infinite alternate;
       mix-blend-mode: screen;
     }
+
     @keyframes drift{
       0%{ transform: translate(-2%, -1%) rotate(-6deg) scale(1.04); }
       100%{ transform: translate(2%, 1%) rotate(6deg) scale(1.08); }
@@ -133,32 +134,6 @@
       max-width: 60ch;
     }
 
-    .badge{
-      flex: 0 0 auto;
-      display:flex;
-      align-items:center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(0,0,0,0.20);
-      box-shadow: 0 0 22px rgba(0,0,0,0.28);
-      color: rgba(255,255,255,0.86);
-      font-size: 12px;
-      user-select:none;
-      white-space:nowrap;
-    }
-    .dot{
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(255,255,255,0.05));
-      box-shadow:
-        0 0 0 4px rgba(255,255,255,0.06),
-        0 0 18px var(--glowP),
-        0 0 18px var(--glowM);
-    }
-
     .grid{
       display:grid;
       grid-template-columns: 1fr 1fr;
@@ -200,20 +175,12 @@
         0 0 26px rgba(190,0,120,0.14);
     }
 
-    .linkCard:focus-visible{
-      box-shadow:
-        0 0 0 3px rgba(190,0,120,0.26),
-        0 0 0 6px rgba(130,5,179,0.18),
-        0 18px 44px rgba(0,0,0,0.45);
-    }
-
     .lcInner{
       padding: 18px 18px 16px;
       position:relative;
       z-index:1;
     }
 
-    /* Overlap prevention: allow title to shrink & ellipsis */
     .lcTop{
       display:flex;
       align-items:flex-start;
@@ -222,20 +189,16 @@
       min-width: 0;
     }
 
+    /* 2-line wrapping titles (no overlap) */
     .lcName{
       margin:0;
       font-weight: 700;
       font-size: 16px;
       letter-spacing: 0.2px;
-
-      /* allow wrapping */
       white-space: normal;
-
-      /* clamp to 2 lines */
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
-
       overflow: hidden;
       line-height: 1.2;
     }
@@ -268,31 +231,9 @@
       opacity: 0.95;
     }
 
-    .footer{
-      margin-top: 18px;
-      display:flex;
-      justify-content:space-between;
-      gap: 10px;
-      flex-wrap:wrap;
-      color: rgba(255,255,255,0.58);
-      font-size: 12px;
-    }
-
-    .tinyLink{
-      color: rgba(255,255,255,0.72);
-      text-decoration: none;
-      border-bottom: 1px solid rgba(255,255,255,0.18);
-      cursor: pointer;
-    }
-    .tinyLink:hover{
-      color: rgba(255,255,255,0.92);
-      border-bottom-color: rgba(255,255,255,0.30);
-    }
-
     @media (max-width: 700px){
       .cardInner{ padding: 20px; }
       .grid{ grid-template-columns: 1fr; }
-      .badge{ display:none; }
     }
   </style>
 </head>
@@ -309,6 +250,7 @@
             <h1 class="title">Wishlists</h1>
             <p class="subtitle">One link for everything I’m currently eyeing. Pick your platform below.</p>
           </div>
+        </div>
 
         <!-- JSON-driven cards -->
         <div class="grid" id="linksGrid" aria-live="polite"></div>
@@ -328,9 +270,6 @@
         .replaceAll('"',"&quot;")
         .replaceAll("'","&#039;");
 
-      const year = new Date().getFullYear();
-      document.getElementById("y").textContent = year;
-
       // Loading state
       grid.innerHTML = `
         <div class="linkCard" style="pointer-events:none; opacity:0.85;">
@@ -345,11 +284,16 @@
       `;
 
       try{
-        const res = await fetch("./links.json", { cache: "no-store" });
-        if(!res.ok) throw new Error("Could not load links.json");
+        const jsonUrl = new URL("links.json", window.location.href);
+        const res = await fetch(jsonUrl, { cache: "no-store" });
+
+        if(!res.ok){
+          throw new Error(`HTTP ${res.status} while fetching links.json`);
+        }
+
         const data = await res.json();
 
-        // THEME
+        // Theme
         const root = document.documentElement;
         const theme = data.theme || {};
         if (theme.font) root.style.setProperty("--font", theme.font);
@@ -357,15 +301,17 @@
         if (theme.ashenPurple) root.style.setProperty("--ashen-purple", theme.ashenPurple);
         if (Number.isFinite(theme.radius)) root.style.setProperty("--radius", `${theme.radius}px`);
 
-        // PAGE COPY
+        // Page copy
         const page = data.page || {};
         if (page.title){
           document.querySelector(".title").textContent = page.title;
-          document.title = `Ashen — ${page.title}`;
+          document.title = `Ashen - ${page.title}`;
         }
-        if (page.subtitle) document.querySelector(".subtitle").textContent = page.subtitle;
+        if (page.subtitle){
+          document.querySelector(".subtitle").textContent = page.subtitle;
+        }
 
-        // SINGLE PAGE: first section only (for now)
+        // Single page: first section
         const section = (data.sections && data.sections[0]) ? data.sections[0] : null;
         const items = section?.items || [];
 
@@ -375,7 +321,6 @@
           const hint = escapeHtml(item.hint || "");
           const pill = escapeHtml(item.pill || "Open");
 
-          // Optional per-card rail (JSON-driven)
           const rail = item.rail || {};
           let railStyle = "";
           if (rail.type === "solid" && rail.color){
@@ -408,21 +353,25 @@
                   <h2 class="lcName">No links found</h2>
                   <span class="pill">Add items</span>
                 </div>
-                <p class="lcHint">Put cards in sections[0].items inside links.json.</p>
+                <p class="lcHint">Add items to sections[0].items in links.json.</p>
               </div>
             </div>
           `;
         }
 
-      }catch(err){
+      } catch (err) {
+        const attempted = new URL("links.json", window.location.href).toString();
         grid.innerHTML = `
           <div class="linkCard" style="pointer-events:none; opacity:0.9;">
             <div class="lcInner">
               <div class="lcTop">
                 <h2 class="lcName">Couldn’t load links.json</h2>
-                <span class="pill">Fix</span>
+                <span class="pill">Debug</span>
               </div>
-              <p class="lcHint">Ensure links.json is in the repo root and committed.</p>
+              <p class="lcHint">
+                Tried: ${attempted}<br/>
+                Error: ${escapeHtml(String(err.message || err))}
+              </p>
             </div>
           </div>
         `;
