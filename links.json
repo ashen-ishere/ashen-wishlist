@@ -27,6 +27,32 @@
           "pill": "Open"
         }
       ]
+    },
+    {
+      "name": "Socials",
+      "items": [
+        {
+          "id": "twitch",
+          "label": "Twitch",
+          "hint": "@ashen_ishere",
+          "url": "https://www.twitch.tv/ashen_ishere",
+          "pill": "Follow"
+        },
+        {
+          "id": "youtube",
+          "label": "YouTube",
+          "hint": "@ashen_ishere",
+          "url": "https://www.youtube.com/@ashen_ishere",
+          "pill": "Subscribe"
+        },
+        {
+          "id": "tiktok",
+          "label": "TikTok",
+          "hint": "@ashen_ishere",
+          "url": "https://www.tiktok.com/@ashen_ishere",
+          "pill": "Follow"
+        }
+      ]
     }
   ]
 }

@@ -307,37 +307,58 @@
           document.querySelector(".subtitle").textContent = page.subtitle;
         }
 
-        // Single page: first section
-        const section = (data.sections && data.sections[0]) ? data.sections[0] : null;
-        const items = section?.items || [];
+        // Render ALL sections (Wishlists + Socials in rows)
+        const sections = data.sections || [];
 
-        grid.innerHTML = items.map(item => {
-          const url = String(item.url || "#");
-          const label = escapeHtml(item.label || "Link");
-          const hint = escapeHtml(item.hint || "");
-          const pill = escapeHtml(item.pill || "Open");
+        grid.innerHTML = sections.map(section => {
+          const items = section.items || [];
 
-          const rail = item.rail || {};
-          let railStyle = "";
-          if (rail.type === "solid" && rail.color){
-            railStyle = `background:${rail.color};`;
-          } else if (rail.type === "gradient" && rail.from && rail.to){
-            railStyle = `background:linear-gradient(180deg, ${rail.from}, ${rail.to});`;
-          } else {
-            railStyle = `background:linear-gradient(180deg, var(--ashen-pink), var(--ashen-purple));`;
-          }
+          const cards = items.map(item => {
+            const url = String(item.url || "#");
+            const label = escapeHtml(item.label || "Link");
+            const hint = escapeHtml(item.hint || "");
+            const pill = escapeHtml(item.pill || "Open");
+
+            const rail = item.rail || {};
+            let railStyle = "";
+            if (rail.type === "solid" && rail.color){
+              railStyle = `background:${rail.color};`;
+            } else if (rail.type === "gradient" && rail.from && rail.to){
+              railStyle = `background:linear-gradient(180deg, ${rail.from}, ${rail.to});`;
+            } else {
+              railStyle = `background:linear-gradient(180deg, var(--ashen-pink), var(--ashen-purple));`;
+            }
+
+            return `
+              <a class="linkCard" href="${url}" target="_blank" rel="noopener noreferrer">
+                <span class="rail" aria-hidden="true" style="${railStyle}"></span>
+                <div class="lcInner">
+                  <div class="lcTop">
+                    <h2 class="lcName" title="${label}">${label}</h2>
+                    <span class="pill">${pill}</span>
+                  </div>
+                  ${hint ? `<p class="lcHint">${hint}</p>` : ``}
+                </div>
+              </a>
+            `;
+          }).join("");
 
           return `
-            <a class="linkCard" href="${url}" target="_blank" rel="noopener noreferrer">
-              <span class="rail" aria-hidden="true" style="${railStyle}"></span>
-              <div class="lcInner">
-                <div class="lcTop">
-                  <h2 class="lcName" title="${label}">${label}</h2>
-                  <span class="pill">${pill}</span>
-                </div>
-                ${hint ? `<p class="lcHint">${hint}</p>` : ``}
+            <div style="width:100%;">
+              <h2 style="
+                margin: 22px 0 8px 2px;
+                font-size: 14px;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                color: var(--textDim);
+                opacity: 0.9;
+              ">
+                ${escapeHtml(section.name)}
+              </h2>
+              <div class="grid">
+                ${cards}
               </div>
-            </a>
+            </div>
           `;
         }).join("");
 
