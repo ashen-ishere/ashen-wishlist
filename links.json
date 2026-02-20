@@ -13,7 +13,7 @@
           "id": "about",
           "type": "text",
           "label": "About",
-          "text": "Welcome to Ashen's Domain.\nim just me - calm energy, cozy chaos.\nLevel {level}. We'll probably vibe on something."
+          "text": "Welcome to Ashen's Domain.\nIm just me - calm energy, cozy chaos.\nLevel {level}. We'll probably vibe on something."
         }
       ]
     },
