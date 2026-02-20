@@ -111,6 +111,14 @@
       z-index:1;
     }
 
+    .top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 16px;
+      margin-bottom: 10px;
+    }
+
     .title{
       margin:0;
       font-size: clamp(22px, 2.6vw, 30px);
@@ -211,6 +219,27 @@
       min-width: 0;
     }
 
+    /* --- ICONS --- */
+    .lcTitleRow{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      min-width: 0; /* lets title clamp properly */
+    }
+
+    .lcIcon{
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+      opacity: 0.92;
+      filter: drop-shadow(0 0 10px rgba(130,5,179,0.18)) drop-shadow(0 0 10px rgba(190,0,120,0.12));
+    }
+
+    .grid--socials .lcIcon{
+      width: 17px;
+      height: 17px;
+    }
+
     .lcName{
       margin:0;
       font-weight: 700;
@@ -281,6 +310,13 @@
     <section class="card" aria-label="Ashen hub">
       <div class="cardInner">
 
+        <div class="top">
+          <div>
+            <h1 class="title">Wishlists</h1>
+            <p class="subtitle">One link for everything I’m currently eyeing. Pick your platform below.</p>
+          </div>
+        </div>
+
         <!-- Sections render here -->
         <div class="sections" id="linksRoot" aria-live="polite"></div>
 
@@ -298,6 +334,24 @@
         .replaceAll(">","&gt;")
         .replaceAll('"',"&quot;")
         .replaceAll("'","&#039;");
+
+      const iconSvg = (id) => {
+        const common = 'class="lcIcon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"';
+        switch(String(id || "").toLowerCase()){
+          case "twitch":
+            return `<svg ${common}><path d="M6 5h14v10l-4 4h-4l-2 2H8v-2H6V5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 9v5M14 9v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+          case "youtube":
+            return `<svg ${common}><path d="M10 9.5l6 3.5-6 3.5v-7z" fill="currentColor"/><path d="M21 12c0 4-1 6-9 6S3 16 3 12 4 6 12 6s9 2 9 6z" stroke="currentColor" stroke-width="1.8"/></svg>`;
+          case "tiktok":
+            return `<svg ${common}><path d="M14 6c1.1 1.7 2.7 2.7 4.5 2.9v3c-1.8-.1-3.4-.8-4.5-1.7v6.1c0 2.6-2.1 4.7-4.7 4.7S4.6 20.6 4.6 18s2.1-4.7 4.7-4.7c.3 0 .6 0 .9.1v3c-.3-.1-.6-.2-.9-.2-1 0-1.8.8-1.8 1.8s.8 1.8 1.8 1.8 1.8-.8 1.8-1.8V6h3z" fill="currentColor"/></svg>`;
+          case "steam":
+            return `<svg ${common}><path d="M7.5 16.5l2.6 1.1a3 3 0 104-4l-1.1-2.6A4.8 4.8 0 1110 19.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="15.8" cy="8.3" r="2.1" stroke="currentColor" stroke-width="1.8"/><circle cx="9.2" cy="17.2" r="1.2" fill="currentColor"/></svg>`;
+          case "amazon":
+            return `<svg ${common}><path d="M6.5 10.5c0-2.2 1.8-4 4-4H14c2.2 0 4 1.8 4 4v7H6.5v-7z" stroke="currentColor" stroke-width="1.8"/><path d="M9 10h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7 19.2c2.8 1.6 7.2 1.6 10 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+          default:
+            return `<svg ${common}><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+        }
+      };
 
       // Loading state
       rootEl.innerHTML = `
@@ -334,7 +388,10 @@
         const page = data.page || {};
         if (page.title){
           document.querySelector(".title").textContent = page.title;
-          document.title = 'Ashen - ${page.title}';
+          document.title = `Ashen — ${page.title}`;
+        }
+        if (page.subtitle){
+          document.querySelector(".subtitle").textContent = page.subtitle;
         }
 
         const sections = Array.isArray(data.sections) ? data.sections : [];
@@ -387,7 +444,10 @@
                 <span class="rail" aria-hidden="true" style="${railStyle}"></span>
                 <div class="lcInner">
                   <div class="lcTop">
+                  <div class="lcTitleRow">
+                    ${iconSvg(item.id)}
                     <h3 class="lcName" title="${label}">${label}</h3>
+                  </div>
                     <span class="pill">${pill}</span>
                   </div>
                   ${hint ? `<p class="lcHint">${hint}</p>` : ``}
