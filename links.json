@@ -16,17 +16,17 @@
           "id": "about",
           "type": "text",
           "label": "About",
-          "text": "Welcome to Ashen's Domain.\nIm just me - calm energy, cozy chaos.\nLevel {level}. We'll probably vibe on something."
+          "text": "Welcome to Ashen's Domain.\nI'm just me - calm energy, cozy chaos.\nLevel {level}. We'll probably vibe on something."
         }
       ]
     },
     {
-      "name": "Current Focus",
+      "name": "What Im Doing",
       "items": [
         {
           "id": "focus",
           "type": "presence",
-          "label": "Current Focus"
+          "label": "What Im Doing"
         }
       ]
     },
@@ -36,14 +36,14 @@
         {
           "id": "amazon",
           "label": "Amazon Wishlist",
-          "hint": "Hardware, stream gear, quality-of-life bits - all in one list.",
+          "hint": "Gear and quality-of-life bits.",
           "url": "https://www.amazon.co.uk/hz/wishlist/ls/1CNMNAMR10ST9?ref_=wl_share",
           "pill": "Open"
         },
         {
           "id": "steam",
           "label": "Steam Wishlist",
-          "hint": "Games I'm tracking - new releases, cosy picks, and “one day” titles.",
+          "hint": "Games I'm tracking.",
           "url": "https://store.steampowered.com/wishlist/profiles/76561199804387910/",
           "pill": "Open"
         }
