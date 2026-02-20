@@ -141,9 +141,24 @@
       margin-top: 18px;
     }
 
-    /* Force Socials into a single row of 3 (desktop) */
+    /* Social row: elegant horizontal strip on desktop */
     .grid--socials{
-      grid-template-columns: repeat(3, 1fr);
+      display: flex;
+      gap: 12px;
+    }
+
+    /* Make social cards smaller & cleaner than wishlist cards */
+    .grid--socials .linkCard{
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* Mobile: stack (your current mobile is already perfect) */
+    @media (max-width: 700px){
+      .grid--socials{
+        display: grid;
+        grid-template-columns: 1fr;
+      }
     }
 
     /* Mobile still stacks nicely */
