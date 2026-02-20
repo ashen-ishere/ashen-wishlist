@@ -21,6 +21,16 @@
       ]
     },
     {
+      "name": "Current Focus",
+      "items": [
+        {
+          "id": "focus",
+          "type": "presence",
+          "label": "Current Focus"
+        }
+      ]
+    },
+    {
       "name": "Wishlists",
       "items": [
         {
