@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ashen's Wishlists</title>
+  <meta name="description" content="Ashen’s wishlists hub: Amazon + Steam." />
+  <meta name="theme-color" content="#120a1c" />
+
+  <style>
+    :root{
+      --ashen-pink:#be0078;
+      --ashen-purple:#8205b3;
+
+      --bg0:#07060c;
+      --bg1:#0b0812;
+
+      --text: rgba(255,255,255,0.92);
+      --textDim: rgba(255,255,255,0.72);
+
+      --glass1: rgba(18,10,28,0.74);
+      --glass2: rgba(10, 8,18,0.52);
+
+      --stroke: rgba(255,255,255,0.10);
+      --stroke2: rgba(255,255,255,0.16);
+
+      --radius: 18px;
+      --pad: 18px;
+      --shadow: 0 18px 60px rgba(0,0,0,0.55);
+      --glowP: rgba(130, 5,179,0.28);
+      --glowM: rgba(190, 0,120,0.22);
+    }
+
+    *{ box-sizing: border-box; }
+    html, body{ height: 100%; }
+    body{
+      margin:0;
+      font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 800px at 12% 10%, rgba(190,0,120,0.22), transparent 55%),
+        radial-gradient(900px 700px at 88% 22%, rgba(130,5,179,0.22), transparent 52%),
+        radial-gradient(1200px 900px at 50% 90%, rgba(255,255,255,0.05), transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow-x:hidden;
+    }
+
+    /* subtle drifting mist/noise without images */
+    .mist{
+      position: fixed;
+      inset: -40%;
+      pointer-events:none;
+      opacity: 0.22;
+      filter: blur(22px);
+      background:
+        conic-gradient(from 180deg at 50% 50%,
+          rgba(190,0,120,0.22),
+          rgba(130,5,179,0.22),
+          rgba(255,255,255,0.06),
+          rgba(190,0,120,0.18)
+        );
+      animation: drift 14s ease-in-out infinite alternate;
+      mix-blend-mode: screen;
+    }
+    @keyframes drift{
+      0%{ transform: translate(-2%, -1%) rotate(-6deg) scale(1.04); }
+      100%{ transform: translate(2%, 1%) rotate(6deg) scale(1.08); }
+    }
+
+    .wrap{
+      min-height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 28px 16px;
+    }
+
+    .card{
+      width: min(860px, 100%);
+      border-radius: calc(var(--radius) + 10px);
+      background: linear-gradient(180deg, var(--glass1), var(--glass2));
+      border: 1px solid var(--stroke);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow:hidden;
+    }
+
+    /* corner-wrap shine */
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg,
+        rgba(190,0,120,0.45),
+        rgba(130,5,179,0.40),
+        rgba(255,255,255,0.10)
+      );
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0.7;
+      pointer-events:none;
+    }
+
+    .cardInner{
+      padding: 28px;
+      position:relative;
+      z-index:1;
+    }
+
+    .top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .title{
+      margin:0;
+      font-size: clamp(22px, 2.6vw, 30px);
+      letter-spacing: 0.2px;
+      line-height: 1.1;
+    }
+    .subtitle{
+      margin: 8px 0 0;
+      color: var(--textDim);
+      line-height: 1.35;
+      font-size: 14px;
+      max-width: 60ch;
+    }
+
+    .badge{
+      flex: 0 0 auto;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.20);
+      box-shadow: 0 0 22px rgba(0,0,0,0.28);
+      color: rgba(255,255,255,0.86);
+      font-size: 12px;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .dot{
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(255,255,255,0.05));
+      box-shadow:
+        0 0 0 4px rgba(255,255,255,0.06),
+        0 0 18px var(--glowP),
+        0 0 18px var(--glowM);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .linkCard{
+      display:block;
+      text-decoration:none;
+      color: var(--text);
+      border-radius: var(--radius);
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.18);
+      overflow:hidden;
+      position:relative;
+      transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+      outline: none;
+    }
+
+    .linkCard::after{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      background: radial-gradient(600px 180px at 20% 0%,
+        rgba(190,0,120,0.25),
+        transparent 55%
+      );
+      opacity: 0.7;
+      pointer-events:none;
+    }
+
+    .linkCard:hover{
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,0.20);
+      box-shadow:
+        0 18px 44px rgba(0,0,0,0.45),
+        0 0 26px rgba(130,5,179,0.18),
+        0 0 26px rgba(190,0,120,0.14);
+    }
+    .linkCard:focus-visible{
+      box-shadow:
+        0 0 0 3px rgba(190,0,120,0.26),
+        0 0 0 6px rgba(130,5,179,0.18),
+        0 18px 44px rgba(0,0,0,0.45);
+    }
+
+    .lcInner{
+      padding: 18px 18px 16px;
+      position:relative;
+      z-index:1;
+    }
+
+    .lcTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+    }
+
+    .lcName{
+      margin:0;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 0.2px;
+    }
+
+    .lcHint{
+      margin: 10px 0 0;
+      color: var(--textDim);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .pill{
+      flex: 0 0 auto;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      font-size: 12px;
+      color: rgba(255,255,255,0.86);
+    }
+
+    .rail{
+      position:absolute;
+      left:0;
+      top:0;
+      bottom:0;
+      width: 4px;
+      background: linear-gradient(180deg, var(--ashen-pink), var(--ashen-purple));
+      opacity: 0.95;
+    }
+
+    /* per-link rail tweaks */
+    .amazon .rail{
+      background: linear-gradient(180deg, var(--ashen-pink), rgba(190,0,120,0.15));
+    }
+    .steam .rail{
+      background: linear-gradient(180deg, var(--ashen-purple), rgba(130,5,179,0.15));
+    }
+
+    .footer{
+      margin-top: 18px;
+      display:flex;
+      justify-content:space-between;
+      gap: 10px;
+      flex-wrap:wrap;
+      color: rgba(255,255,255,0.58);
+      font-size: 12px;
+    }
+
+    .tinyLink{
+      color: rgba(255,255,255,0.72);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.18);
+    }
+    .tinyLink:hover{ color: rgba(255,255,255,0.92); border-bottom-color: rgba(255,255,255,0.30); }
+
+    @media (max-width: 700px){
+      .cardInner{ padding: 20px; }
+      .grid{ grid-template-columns: 1fr; }
+      .badge{ display:none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="mist" aria-hidden="true"></div>
+
+  <main class="wrap">
+    <section class="card" aria-label="Wishlists hub">
+      <div class="cardInner">
+        <div class="top">
+          <div>
+            <h1 class="title">Wishlists</h1>
+            <p class="subtitle">
+              One link for everything I’m currently eyeing. Pick your platform below.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid">
+          <!-- TODO: Replace the href values with YOUR real wishlist links -->
+          <a class="linkCard amazon" href="https://www.amazon.co.uk/hz/wishlist/ls/1CNMNAMR10ST9?ref_=wl_share" target="_blank" rel="noopener">
+            <span class="rail" aria-hidden="true"></span>
+            <div class="lcInner">
+              <div class="lcTop">
+                <h2 class="lcName">Amazon Wishlist</h2>
+                <span class="pill">Open</span>
+              </div>
+              <p class="lcHint">Hardware, stream gear, quality-of-life bits — all in one list.</p>
+            </div>
+          </a>
+
+          <a class="linkCard steam" href="https://store.steampowered.com/wishlist/profiles/76561199804387910/" target="_blank" rel="noopener">
+            <span class="rail" aria-hidden="true"></span>
+            <div class="lcInner">
+              <div class="lcTop">
+                <h2 class="lcName">Steam Wishlist</h2>
+                <span class="pill">Open</span>
+              </div>
+              <p class="lcHint">Games I’m tracking — new releases, cosy picks, and “one day” titles.</p>
+            </div>
+          </a>
+        </div>
+
+        <div class="footer">
+          <div>© <span id="y"></span> Ashen</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
