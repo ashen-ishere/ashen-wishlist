@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ashen's Domain</title>
-  <meta name="description" content="Ashen's hub." />
+  <meta name="description" content="Ashen’s hub." />
   <meta name="theme-color" content="#120a1c" />
 
   <style>
@@ -28,6 +28,9 @@
       --shadow: 0 18px 60px rgba(0,0,0,0.55);
       --glowP: rgba(130, 5,179,0.28);
       --glowM: rgba(190, 0,120,0.22);
+
+      /* ultra-subtle emerald for hover/focus energy (optional future use) */
+      --glowE: rgba(43,182,115,0.12);
     }
 
     *{ box-sizing: border-box; }
@@ -67,14 +70,13 @@
     }
 
     .wrap{
-      min-height:100vh; /* stronger centering anchor */
+      min-height:100vh;
       display:flex;
-      align-items:center; /* ← puts card back in the middle */
+      align-items:center;
       justify-content:center;
       padding: 28px 16px;
     }
 
-    /* Wider on desktop so 2 + 3 feels premium, not cramped */
     .card{
       width: min(1040px, 100%);
       border-radius: calc(var(--radius) + 10px);
@@ -111,7 +113,6 @@
       z-index:1;
     }
 
-    /* IMPORTANT: outer container is a vertical stack (prevents side-by-side section squish) */
     .sections{
       display:flex;
       flex-direction: column;
@@ -121,9 +122,9 @@
 
     .sectionTitle{
       margin: 6px 0 12px 2px;
-      font-size: 16px;          /* bigger */
-      font-weight: 700;         /* more presence */
-      letter-spacing: 0.14em;   /* keeps the premium spacing */
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       color: rgba(255,255,255,0.82);
       opacity: 0.95;
@@ -134,7 +135,6 @@
       gap: 14px;
     }
 
-    /* Section-specific grids */
     .grid--wishlists{
       grid-template-columns: 1fr 1fr;
     }
@@ -143,8 +143,11 @@
       grid-template-columns: repeat(3, 1fr);
     }
 
-    /* About should read like a wide info panel */
     .grid--about{
+      grid-template-columns: 1fr;
+    }
+
+    .grid--focus{
       grid-template-columns: 1fr;
     }
 
@@ -183,7 +186,13 @@
         0 0 26px rgba(190,0,120,0.14);
     }
 
-    /* Text-only cards shouldn't lift like links */
+    .linkCard:focus-visible{
+      box-shadow:
+        0 0 0 3px rgba(190,0,120,0.26),
+        0 0 0 6px rgba(130,5,179,0.18),
+        0 18px 44px rgba(0,0,0,0.45);
+    }
+
     .linkCard.isText:hover{
       transform: none;
       border-color: rgba(255,255,255,0.12);
@@ -196,7 +205,6 @@
       z-index:1;
     }
 
-    /* socials slightly tighter = looks intentional + premium */
     .grid--socials .lcInner{
       padding: 16px 16px 14px;
     }
@@ -209,12 +217,11 @@
       min-width: 0;
     }
 
-    /* --- ICONS --- */
     .lcTitleRow{
       display:flex;
       align-items:center;
       gap: 10px;
-      min-width: 0; /* lets title clamp properly */
+      min-width: 0;
     }
 
     .lcIcon{
@@ -236,7 +243,6 @@
       font-size: 16px;
       letter-spacing: 0.2px;
 
-      /* 2-line clamp */
       white-space: normal;
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -253,19 +259,30 @@
       line-height: 1.35;
     }
 
-    /* socials: keep the handle visible, but not too tall */
     .grid--socials .lcHint{
       margin-top: 8px;
       font-size: 12.5px;
     }
 
-    /* About text styling */
     .aboutText{
       margin: 10px 0 0;
       color: var(--textDim);
       font-size: 14px;
       line-height: 1.55;
       max-width: 85ch;
+    }
+
+    .focusGame{
+      margin: 10px 0 0;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      line-height: 1.25;
+      color: rgba(255,255,255,0.90);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .pill{
@@ -289,7 +306,6 @@
       opacity: 0.95;
     }
 
-    /* Responsive */
     @media (max-width: 900px){
       .grid--socials{ grid-template-columns: 1fr; }
     }
@@ -308,10 +324,7 @@
   <main class="wrap">
     <section class="card" aria-label="Ashen hub">
       <div class="cardInner">
-
-        <!-- Sections render here -->
         <div class="sections" id="linksRoot" aria-live="polite"></div>
-
       </div>
     </section>
   </main>
@@ -342,12 +355,26 @@
             return `<svg ${common}><path d="M6.5 10.5c0-2.2 1.8-4 4-4H14c2.2 0 4 1.8 4 4v7H6.5v-7z" stroke="currentColor" stroke-width="1.8"/><path d="M9 10h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7 19.2c2.8 1.6 7.2 1.6 10 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
           case "about":
             return `<svg ${common}><circle cx="12" cy="8" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M5.5 20c1.4-3.4 4-5.2 6.5-5.2S17.1 16.6 18.5 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+          case "focus":
+            return `<svg ${common}><path d="M7 17c4-1 6-3 7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M14 10l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M16 6h2a2 2 0 012 2v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M8 20H6a2 2 0 01-2-2v-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
           default:
             return `<svg ${common}><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
         }
       };
 
-      // Loading state
+      const calculateLevel = () => {
+        const birthDate = new Date(1989, 1, 28); // Feb = 1 (0-indexed)
+        const today = new Date();
+
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+          age--;
+        }
+        return age;
+      };
+
       rootEl.innerHTML = `
         <div class="linkCard" style="pointer-events:none; opacity:0.85;">
           <div class="lcInner">
@@ -406,35 +433,40 @@
             key === "socials" ? "grid grid--socials" :
             key === "wishlists" ? "grid grid--wishlists" :
             key === "about" ? "grid grid--about" :
+            key === "current focus" ? "grid grid--focus" :
             "grid grid--wishlists";
 
           const cards = items.map(item => {
             const id = String(item.id || "");
             const label = escapeHtml(item.label || "Link");
 
-            const isText = (String(item.type || "").toLowerCase() === "text") || (typeof item.text === "string");
+            const type = String(item.type || "").toLowerCase();
+            const isText = (type === "text") || (typeof item.text === "string");
+            const isPresence = (type === "presence");
+
+            if (isPresence){
+              return `
+                <div class="linkCard isText" data-presence="1">
+                  <span class="rail" aria-hidden="true"></span>
+                  <div class="lcInner">
+                    <div class="lcTop">
+                      <div class="lcTitleRow">
+                        ${iconSvg(id)}
+                        <h3 class="lcName" title="${label}">${label}</h3>
+                      </div>
+                    </div>
+                    <div class="focusGame" id="focusValue">Checking Discord…</div>
+                  </div>
+                </div>
+              `;
+            }
 
             if (isText){
-              const calculateLevel = () => {
-                const birthDate = new Date(1989, 1, 28); // Feb = month 1 (0-indexed)
-                const today = new Date();
+              let rawText = item.text || "";
+              const level = calculateLevel();
+              rawText = rawText.replaceAll("{level}", level);
 
-                let age = today.getFullYear() - birthDate.getFullYear();
-                const m = today.getMonth() - birthDate.getMonth();
-
-                if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
-                }
-
-                return age;
-                };
-
-                let rawText = item.text || "";
-                const level = calculateLevel();
-                rawText = rawText.replaceAll("{level}", level);
-
-                // Preserve line breaks + escape safely
-                const text = escapeHtml(rawText).replaceAll("\n", "<br>");
+              const text = escapeHtml(rawText).replaceAll("\n", "<br>");
               return `
                 <div class="linkCard isText">
                   <span class="rail" aria-hidden="true"></span>
@@ -493,6 +525,46 @@
         }).join("");
 
         rootEl.innerHTML = sectionHtml || "";
+
+        // --- Discord Presence → Current Focus (Lanyard) ---
+        const focusEl = document.getElementById("focusValue");
+        const discord = data.discord || {};
+        const userId = String(discord.userId || "").trim();
+
+        if (focusEl){
+          if (!userId || userId === "PUT_YOUR_DISCORD_USER_ID_HERE"){
+            focusEl.textContent = "Set your Discord userId in links.json";
+          } else {
+            try{
+              // Lanyard REST endpoint: /v1/users/:id :contentReference[oaicite:1]{index=1}
+              const pres = await fetch(`https://api.lanyard.rest/v1/users/${encodeURIComponent(userId)}`, { cache: "no-store" });
+              if(!pres.ok) throw new Error(`HTTP ${pres.status}`);
+
+              const payload = await pres.json();
+              const activities = payload?.data?.activities || [];
+
+              // Pick a "playing" activity; ignore Custom Status / Spotify.
+              const playing = activities.find(a =>
+                a && a.type === 0 &&
+                typeof a.name === "string" &&
+                a.name.toLowerCase() !== "spotify" &&
+                a.name.toLowerCase() !== "custom status"
+              );
+
+              const game = playing?.name;
+
+              if (game){
+                focusEl.textContent = game;
+              } else {
+                // Could be offline/invisible/no activity enabled; Lanyard is opt-in via server join. :contentReference[oaicite:2]{index=2}
+                focusEl.textContent = "Not currently showing an activity";
+              }
+            } catch (e){
+              focusEl.textContent = "Couldn't read Discord status";
+              console.error(e);
+            }
+          }
+        }
 
       } catch (err) {
         const attempted = new URL("links.json", window.location.href).toString();
