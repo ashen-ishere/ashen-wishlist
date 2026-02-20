@@ -141,6 +141,18 @@
       margin-top: 18px;
     }
 
+    /* Force Socials into a single row of 3 (desktop) */
+    .grid--socials{
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* Mobile still stacks nicely */
+    @media (max-width: 700px){
+      .grid--socials{
+        grid-template-columns: 1fr;
+      }
+    }
+
     .linkCard{
       display:block;
       text-decoration:none;
@@ -307,11 +319,29 @@
           document.querySelector(".subtitle").textContent = page.subtitle;
         }
 
-        // Render ALL sections (Wishlists + Socials in rows)
-        const sections = data.sections || [];
+        const sections = Array.isArray(data.sections) ? data.sections : [];
+
+        // Count total items across all sections
+        const totalItems = sections.reduce((sum, s) => sum + (Array.isArray(s.items) ? s.items.length : 0), 0);
+
+        if (totalItems === 0){
+          grid.innerHTML = `
+            <div class="linkCard" style="pointer-events:none; opacity:0.9;">
+              <div class="lcInner">
+                <div class="lcTop">
+                  <h2 class="lcName">No links found</h2>
+                  <span class="pill">Add items</span>
+                </div>
+                <p class="lcHint">Add items to sections[].items in links.json.</p>
+              </div>
+            </div>
+          `;
+          return;
+        }
 
         grid.innerHTML = sections.map(section => {
-          const items = section.items || [];
+          const name = escapeHtml(section.name || "");
+          const items = Array.isArray(section.items) ? section.items : [];
 
           const cards = items.map(item => {
             const url = String(item.url || "#");
@@ -343,6 +373,11 @@
             `;
           }).join("");
 
+          // Socials must be a single row of 3
+          const gridClass = (String(section.name || "").toLowerCase() === "socials")
+            ? "grid grid--socials"
+            : "grid";
+
           return `
             <div style="width:100%;">
               <h2 style="
@@ -353,28 +388,14 @@
                 color: var(--textDim);
                 opacity: 0.9;
               ">
-                ${escapeHtml(section.name)}
+                ${name}
               </h2>
-              <div class="grid">
+              <div class="${gridClass}">
                 ${cards}
               </div>
             </div>
           `;
         }).join("");
-
-        if(items.length === 0){
-          grid.innerHTML = `
-            <div class="linkCard" style="pointer-events:none; opacity:0.9;">
-              <div class="lcInner">
-                <div class="lcTop">
-                  <h2 class="lcName">No links found</h2>
-                  <span class="pill">Add items</span>
-                </div>
-                <p class="lcHint">Add items to sections[0].items in links.json.</p>
-              </div>
-            </div>
-          `;
-        }
 
       } catch (err) {
         const attempted = new URL("links.json", window.location.href).toString();
