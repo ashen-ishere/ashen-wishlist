@@ -1,7 +1,4 @@
 {
-  "page": {
-    "subtitle": "One link for everything I’m currently eyeing. Pick your platform below."
-  },
   "theme": {
     "font": "\"Segoe UI\", system-ui, -apple-system, Arial, sans-serif",
     "ashenPink": "#be0078",

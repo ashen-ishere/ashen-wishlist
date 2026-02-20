@@ -310,13 +310,6 @@
     <section class="card" aria-label="Ashen hub">
       <div class="cardInner">
 
-        <div class="top">
-          <div>
-            <h1 class="title">Wishlists</h1>
-            <p class="subtitle">One link for everything I’m currently eyeing. Pick your platform below.</p>
-          </div>
-        </div>
-
         <!-- Sections render here -->
         <div class="sections" id="linksRoot" aria-live="polite"></div>
 
@@ -386,12 +379,15 @@
 
         // Page copy
         const page = data.page || {};
-        if (page.title){
-          document.querySelector(".title").textContent = page.title;
-          document.title = `Ashen — ${page.title}`;
+        const titleEl = document.querySelector(".title");
+        if (page.title && titleEl){
+          titleEl.textContent = page.title;
+          document.title = `Ashen - ${page.title}`;
         }
-        if (page.subtitle){
-          document.querySelector(".subtitle").textContent = page.subtitle;
+
+        const subtitleEl = document.querySelector(".subtitle");
+        if (page.subtitle && subtitleEl){
+          subtitleEl.textContent = page.subtitle;
         }
 
         const sections = Array.isArray(data.sections) ? data.sections : [];
