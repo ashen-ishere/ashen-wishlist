@@ -1,0 +1,34 @@
+{
+  "page": {
+    "title": "Wishlists",
+    "subtitle": "One link for everything I’m currently eyeing. Pick your platform below.",
+    "footerLeft": "© {year} Ashen",
+  },
+  "theme": {
+    "font": "\"Segoe UI\", system-ui, -apple-system, Arial, sans-serif",
+    "ashenPink": "#be0078",
+    "ashenPurple": "#8205b3",
+    "radius": 18
+  },
+  "sections": [
+    {
+      "name": "Wishlists",
+      "items": [
+        {
+          "id": "amazon",
+          "label": "Amazon Wishlist",
+          "hint": "Hardware, stream gear, quality-of-life bits - all in one list.",
+          "url": "https://www.amazon.co.uk/hz/wishlist/ls/1CNMNAMR10ST9?ref_=wl_share",
+          "pill": "Open"
+        },
+        {
+          "id": "steam",
+          "label": "Steam Wishlist",
+          "hint": "Games I'm tracking - new releases, cosy picks, and “one day” titles.",
+          "url": "https://store.steampowered.com/wishlist/profiles/76561199804387910/",
+          "pill": "Open"
+        }
+      ]
+    }
+  ]
+}
