@@ -69,7 +69,7 @@
     .wrap{
       min-height:100%;
       display:flex;
-      align-items:center;
+      align-items:flex-start; /* was center */
       justify-content:center;
       padding: 28px 16px;
     }
@@ -139,16 +139,17 @@
       display:flex;
       flex-direction: column;
       gap: 18px;
-      margin-top: 18px;
+      margin-top: 0;
     }
 
     .sectionTitle{
-      margin: 8px 0 10px 2px;
-      font-size: 13px;
-      letter-spacing: 0.10em;
+      margin: 6px 0 12px 2px;
+      font-size: 16px;          /* bigger */
+      font-weight: 700;         /* more presence */
+      letter-spacing: 0.14em;   /* keeps the premium spacing */
       text-transform: uppercase;
-      color: var(--textDim);
-      opacity: 0.9;
+      color: rgba(255,255,255,0.82);
+      opacity: 0.95;
     }
 
     .grid{
