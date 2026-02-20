@@ -536,29 +536,39 @@
             focusEl.textContent = "Set your Discord userId in links.json";
           } else {
             try{
-              // Lanyard REST endpoint: /v1/users/:id :contentReference[oaicite:1]{index=1}
+              // Lanyard REST endpoint: /v1/users/:id
               const pres = await fetch(`https://api.lanyard.rest/v1/users/${encodeURIComponent(userId)}`, { cache: "no-store" });
               if(!pres.ok) throw new Error(`HTTP ${pres.status}`);
 
               const payload = await pres.json();
               const activities = payload?.data?.activities || [];
 
-              // Pick a "playing" activity; ignore Custom Status / Spotify.
-              const playing = activities.find(a =>
-                a && a.type === 0 &&
-                typeof a.name === "string" &&
-                a.name.toLowerCase() !== "spotify" &&
-                a.name.toLowerCase() !== "custom status"
-              );
+              // Helpers
+              const isValidName = (a) => a && typeof a.name === "string" && a.name.trim().length > 0;
+              const isNotCustom = (a) => a.name.toLowerCase() !== "custom status";
 
-              const game = playing?.name;
+              // 1) Prefer Games (type 0)
+              const gameAct = activities.find(a => isValidName(a) && isNotCustom(a) && a.type === 0);
 
-              if (game){
-                focusEl.textContent = game;
+              // 2) Else allow “media” style (WatchDis is commonly type 3 for Watching, type 2 for Listening)
+              const mediaAct = activities.find(a => isValidName(a) && isNotCustom(a) && (a.type === 3 || a.type === 2));
+
+              // Build display text
+              let focusText = "";
+
+              if (gameAct){
+                // Just the game title (your preference)
+                focusText = gameAct.name;
+              } else if (mediaAct){
+                // Show platform + what you're watching/listening to when available
+                // e.g. "YouTube — HYPNOTIZE (Official Music Video)"
+                const details = (typeof mediaAct.details === "string" && mediaAct.details.trim()) ? mediaAct.details.trim() : "";
+                focusText = details ? `${mediaAct.name} — ${details}` : mediaAct.name;
               } else {
-                // Could be offline/invisible/no activity enabled; Lanyard is opt-in via server join. :contentReference[oaicite:2]{index=2}
-                focusEl.textContent = "Not currently showing an activity";
+                focusText = "Currently quiet";
               }
+
+              focusEl.textContent = focusText;
             } catch (e){
               focusEl.textContent = "Couldn't read Discord status";
               console.error(e);
