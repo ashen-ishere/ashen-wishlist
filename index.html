@@ -313,10 +313,6 @@
         <!-- JSON-driven cards -->
         <div class="grid" id="linksGrid" aria-live="polite"></div>
 
-        <div class="footer">
-          <div id="footerLeft">© <span id="y"></span> Ashen</div>
-        </div>
-
       </div>
     </section>
   </main>
@@ -368,11 +364,6 @@
           document.title = `Ashen — ${page.title}`;
         }
         if (page.subtitle) document.querySelector(".subtitle").textContent = page.subtitle;
-
-        if (page.footerLeft){
-          document.getElementById("footerLeft").textContent =
-            page.footerLeft.replace("{year}", String(year));
-        }
 
         // SINGLE PAGE: first section only (for now)
         const section = (data.sections && data.sections[0]) ? data.sections[0] : null;

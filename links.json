@@ -1,8 +1,7 @@
 {
   "page": {
     "title": "Wishlists",
-    "subtitle": "One link for everything I’m currently eyeing. Pick your platform below.",
-    "footerLeft": "© {year} Ashen",
+    "subtitle": "One link for everything I’m currently eyeing. Pick your platform below."
   },
   "theme": {
     "font": "\"Segoe UI\", system-ui, -apple-system, Arial, sans-serif",
