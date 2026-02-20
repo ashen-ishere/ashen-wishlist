@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ashen's Wishlists</title>
-  <meta name="description" content="Ashen’s hub." />
+  <meta name="description" content="Ashen's hub." />
   <meta name="theme-color" content="#120a1c" />
 
   <style>
@@ -248,7 +248,7 @@
         <div class="top">
           <div>
             <h1 class="title">Wishlists</h1>
-            <p class="subtitle">One link for everything I’m currently eyeing. Pick your platform below.</p>
+            <p class="subtitle">One link for everything I'm currently eyeing. Pick your platform below.</p>
           </div>
         </div>
 
@@ -303,10 +303,6 @@
 
         // Page copy
         const page = data.page || {};
-        if (page.title){
-          document.querySelector(".title").textContent = page.title;
-          document.title = `Ashen - ${page.title}`;
-        }
         if (page.subtitle){
           document.querySelector(".subtitle").textContent = page.subtitle;
         }
@@ -365,7 +361,7 @@
           <div class="linkCard" style="pointer-events:none; opacity:0.9;">
             <div class="lcInner">
               <div class="lcTop">
-                <h2 class="lcName">Couldn’t load links.json</h2>
+                <h2 class="lcName">Couldn't load links.json</h2>
                 <span class="pill">Debug</span>
               </div>
               <p class="lcHint">
