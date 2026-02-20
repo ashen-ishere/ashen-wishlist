@@ -334,10 +334,7 @@
         const page = data.page || {};
         if (page.title){
           document.querySelector(".title").textContent = page.title;
-          document.title = `Ashen — ${page.title}`;
-        }
-        if (page.subtitle){
-          document.querySelector(".subtitle").textContent = page.subtitle;
+          document.title = 'Ashen - ${page.title}';
         }
 
         const sections = Array.isArray(data.sections) ? data.sections : [];
