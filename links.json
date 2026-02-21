@@ -37,15 +37,15 @@
           "id": "amazon",
           "label": "Amazon Wishlist",
           "hint": "Gear and quality-of-life bits.",
-          "url": "https://www.amazon.co.uk/hz/wishlist/ls/1CNMNAMR10ST9?ref_=wl_share",
-          "pill": "Open"
+          "pill": "Open",
+          "url": "https://YOUR_AMAZON_WISHLIST_LINK"
         },
         {
           "id": "steam",
           "label": "Steam Wishlist",
           "hint": "Games I'm tracking.",
-          "url": "https://store.steampowered.com/wishlist/profiles/76561199804387910/",
-          "pill": "Open"
+          "pill": "Open",
+          "url": "https://YOUR_STEAM_WISHLIST_LINK"
         }
       ]
     },
@@ -56,22 +56,22 @@
           "id": "twitch",
           "label": "Twitch",
           "hint": "@ashen_ishere",
-          "url": "https://www.twitch.tv/ashen_ishere",
-          "pill": "Follow"
+          "pill": "Follow",
+          "url": "https://www.twitch.tv/ashen_ishere"
         },
         {
           "id": "youtube",
           "label": "YouTube",
           "hint": "@ashen_ishere",
-          "url": "https://www.youtube.com/@ashen_ishere",
-          "pill": "Subscribe"
+          "pill": "Subscribe",
+          "url": "https://www.youtube.com/@ashen_ishere"
         },
         {
           "id": "tiktok",
           "label": "TikTok",
           "hint": "@ashen_ishere",
-          "url": "https://www.tiktok.com/@ashen_ishere",
-          "pill": "Follow"
+          "pill": "Follow",
+          "url": "https://www.tiktok.com/@ashen_ishere"
         }
       ]
     }

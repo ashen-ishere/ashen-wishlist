@@ -16,6 +16,11 @@
 
   --radius: 18px;
   --shadow: 0 18px 60px rgba(0,0,0,0.55);
+  --glowP: rgba(130, 5,179,0.28);
+  --glowM: rgba(190, 0,120,0.22);
+
+  /* subtle emerald option (kept super low) */
+  --glowE: rgba(43,182,115,0.12);
 }
 
 *{ box-sizing: border-box; }
@@ -28,8 +33,30 @@ body{
   background:
     radial-gradient(1200px 800px at 12% 10%, rgba(190,0,120,0.22), transparent 55%),
     radial-gradient(900px 700px at 88% 22%, rgba(130,5,179,0.22), transparent 52%),
+    radial-gradient(1200px 900px at 50% 90%, rgba(255,255,255,0.05), transparent 60%),
     linear-gradient(180deg, var(--bg0), var(--bg1));
   overflow-x:hidden;
+}
+
+.mist{
+  position: fixed;
+  inset: -40%;
+  pointer-events:none;
+  opacity: 0.22;
+  filter: blur(22px);
+  background:
+    conic-gradient(from 180deg at 50% 50%,
+      rgba(190,0,120,0.22),
+      rgba(130,5,179,0.22),
+      rgba(255,255,255,0.06),
+      rgba(190,0,120,0.18)
+    );
+  animation: drift 14s ease-in-out infinite alternate;
+  mix-blend-mode: screen;
+}
+@keyframes drift{
+  0%{ transform: translate(-2%, -1%) rotate(-6deg) scale(1.04); }
+  100%{ transform: translate(2%, 1%) rotate(6deg) scale(1.08); }
 }
 
 .wrap{
@@ -46,11 +73,34 @@ body{
   background: linear-gradient(180deg, var(--glass1), var(--glass2));
   border: 1px solid var(--stroke);
   box-shadow: var(--shadow);
+  position: relative;
   overflow:hidden;
+}
+
+.card::before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg,
+    rgba(190,0,120,0.45),
+    rgba(130,5,179,0.40),
+    rgba(255,255,255,0.10)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.7;
+  pointer-events:none;
 }
 
 .cardInner{
   padding: 28px;
+  position:relative;
+  z-index:1;
 }
 
 .sections{
@@ -60,16 +110,33 @@ body{
 }
 
 .sectionTitle{
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
+  margin: 6px 0 12px 2px;
+  font-size: 18px;              /* bigger headers */
+  font-weight: 800;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.82);
+  color: rgba(255,255,255,0.86);
 }
 
 .grid{
   display:grid;
   gap: 14px;
+}
+
+.grid--wishlists{ grid-template-columns: 1fr 1fr; }
+.grid--socials{ grid-template-columns: repeat(3, 1fr); }
+.grid--about{ grid-template-columns: 1fr; }
+.grid--doing{ grid-template-columns: 1fr; }
+
+/* for multiple activities inside "What Im Doing" card */
+.activitiesGrid{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+.activitiesGrid.isMulti{
+  grid-template-columns: 1fr 1fr;
 }
 
 .linkCard{
@@ -81,42 +148,216 @@ body{
   background: rgba(0,0,0,0.18);
   overflow:hidden;
   position:relative;
+  transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+  outline: none;
+  min-width: 0;
+}
+
+.linkCard::after{
+  content:"";
+  position:absolute;
+  inset:-1px;
+  background: radial-gradient(600px 180px at 20% 0%,
+    rgba(190,0,120,0.25),
+    transparent 55%
+  );
+  opacity: 0.7;
+  pointer-events:none;
+}
+
+.linkCard:hover{
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,0.20);
+  box-shadow:
+    0 18px 44px rgba(0,0,0,0.45),
+    0 0 26px rgba(130,5,179,0.18),
+    0 0 26px rgba(190,0,120,0.14);
+}
+
+.linkCard:focus-visible{
+  box-shadow:
+    0 0 0 3px rgba(190,0,120,0.22),
+    0 0 0 6px rgba(130,5,179,0.16),
+    0 0 0 10px rgba(43,182,115,0.08),
+    0 18px 44px rgba(0,0,0,0.45);
+}
+
+.linkCard.isText:hover{
+  transform: none;
+  border-color: rgba(255,255,255,0.12);
+  box-shadow: none;
 }
 
 .lcInner{
-  padding: 18px;
+  padding: 18px 18px 16px;
+  position:relative;
+  z-index:1;
 }
 
-.focusSlot{
-  margin-top:10px;
-}
+.grid--socials .lcInner{ padding: 16px 16px 14px; }
 
-.focusMedia{
+.lcTop{
   display:flex;
-  gap:14px;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap: 12px;
+  min-width: 0;
+}
+
+.lcTitleRow{
+  display:flex;
   align-items:center;
+  gap: 10px;
+  min-width: 0;
 }
 
-.focusThumb{
-  width:96px;
-  height:54px;
-  border-radius:10px;
-  object-fit:cover;
-  border:1px solid rgba(255,255,255,0.08);
+.lcIcon{
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  opacity: 0.92;
+  filter: drop-shadow(0 0 10px rgba(130,5,179,0.18)) drop-shadow(0 0 10px rgba(190,0,120,0.12));
 }
 
-.focusText{
+.grid--socials .lcIcon{ width: 17px; height: 17px; }
+
+.lcName{
+  margin:0;
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: 0.2px;
+
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.2;
+  min-width: 0;
+}
+
+.lcHint{
+  margin: 10px 0 0;
+  color: var(--textDim);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.grid--socials .lcHint{
+  margin-top: 8px;
+  font-size: 12.5px;
+}
+
+.aboutText{
+  margin: 10px 0 0;
+  color: var(--textDim);
+  font-size: 14px;
+  line-height: 1.55;
+  max-width: 85ch;
+}
+
+/* Activity cards (inside What Im Doing) */
+.activityCard{
+  border-radius: calc(var(--radius) - 2px);
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.14);
+  overflow: hidden;
+  position: relative;
+}
+
+.activityInner{
+  display:flex;
+  gap: 12px;
+  align-items:center;
+  padding: 12px 12px;
+}
+
+.thumb{
+  width: 64px;
+  height: 48px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  overflow:hidden;
+  flex: 0 0 auto;
+}
+.thumb img{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  display:block;
+}
+
+.activityText{
+  min-width:0;
   display:flex;
   flex-direction:column;
+  gap: 4px;
 }
 
-.focusLine{
-  font-size:18px;
-  font-weight:700;
+.activityLine1{
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.focusMeta{
-  font-size:13px;
-  color:rgba(255,255,255,0.65);
-  margin-top:4px;
+.activityLine2{
+  font-size: 13px;
+  color: var(--textDim);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.activityMeta{
+  margin-top: 2px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.60);
+}
+
+.artistLink{
+  color: rgba(255,255,255,0.86);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255,255,255,0.16);
+}
+.artistLink:hover{
+  color: rgba(255,255,255,0.95);
+  border-bottom-color: rgba(255,255,255,0.30);
+}
+
+.pill{
+  flex: 0 0 auto;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  font-size: 12px;
+  color: rgba(255,255,255,0.86);
+  white-space: nowrap;
+}
+
+.rail{
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--ashen-pink), var(--ashen-purple));
+  opacity: 0.95;
+}
+
+@media (max-width: 900px){
+  .grid--socials{ grid-template-columns: 1fr; }
+  .activitiesGrid.isMulti{ grid-template-columns: 1fr; }
+}
+
+@media (max-width: 700px){
+  .cardInner{ padding: 20px; }
+  .grid--wishlists{ grid-template-columns: 1fr; }
+  .grid--socials{ grid-template-columns: 1fr; }
+  .activitiesGrid.isMulti{ grid-template-columns: 1fr; }
 }
