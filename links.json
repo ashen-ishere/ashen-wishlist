@@ -38,14 +38,14 @@
           "label": "Amazon Wishlist",
           "hint": "Gear and quality-of-life bits.",
           "pill": "Open",
-          "url": "https://YOUR_AMAZON_WISHLIST_LINK"
+          "url": "https://www.amazon.co.uk/hz/wishlist/ls/1CNMNAMR10ST9?ref_=wl_share"
         },
         {
           "id": "steam",
           "label": "Steam Wishlist",
           "hint": "Games I'm tracking.",
           "pill": "Open",
-          "url": "https://YOUR_STEAM_WISHLIST_LINK"
+          "url": "https://store.steampowered.com/wishlist/?snr=1_12_4_"
         }
       ]
     },
