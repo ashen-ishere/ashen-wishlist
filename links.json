@@ -53,6 +53,13 @@
       "name": "Socials",
       "items": [
         {
+          "id": "discord",
+          "label": "Discord",
+          "hint": "Join the community",
+          "pill": "Join",
+          "url": "https://discord.gg/YZh676Mb"
+        }
+        {
           "id": "twitch",
           "label": "Twitch",
           "hint": "@ashen_ishere",

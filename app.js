@@ -16,6 +16,8 @@
   const iconSvg = (id) => {
     const common = 'class="lcIcon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"';
     switch(String(id || "").toLowerCase()){
+      case "discord":
+        return `<svg ${common}><path d="M7.5 8.5c1.8-1.3 3.7-1.9 4.5-2l.5 1c.9-.2 1.9-.2 2.8 0l.5-1c.8.1 2.7.7 4.5 2 1.2 2.2 1.4 4.3 1.2 6.3-1.1 1-2.4 1.7-3.9 2.1l-.8-1.2c.5-.2 1-.4 1.5-.7-.4-.3-.7-.5-1.1-.8-2.5 1.2-5.2 1.2-7.7 0-.4.3-.7.5-1.1.8.5.3 1 .5 1.5.7l-.8 1.2c-1.5-.4-2.8-1.1-3.9-2.1-.2-2 .1-4.1 1.3-6.3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 13.3h.01M14 13.3h.01" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>`;
       case "twitch":
         return `<svg ${common}><path d="M6 5h14v10l-4 4h-4l-2 2H8v-2H6V5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 9v5M14 9v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
       case "youtube":

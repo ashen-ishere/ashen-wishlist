@@ -248,6 +248,11 @@ body{
   font-size: 12.5px;
 }
 
+/* Socials: first card (Discord) becomes a full-width row */
+.grid--socials > .linkCard:first-child{
+  grid-column: 1 / -1;
+}
+
 .aboutText{
   margin: 10px 0 0;
   color: var(--textDim);
