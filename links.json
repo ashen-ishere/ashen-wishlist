@@ -21,16 +21,6 @@
       ]
     },
     {
-      "name": "What Im Doing",
-      "items": [
-        {
-          "id": "focus",
-          "type": "presence",
-          "label": "What Im Doing"
-        }
-      ]
-    },
-    {
       "name": "Wishlists",
       "items": [
         {

@@ -250,7 +250,6 @@
         key === "socials" ? "grid grid--socials" :
         key === "wishlists" ? "grid grid--wishlists" :
         key === "about" ? "grid grid--about" :
-        key === "what im doing" ? "grid grid--doing" :
         "grid grid--wishlists";
 
       const cards = items.map(item => {
